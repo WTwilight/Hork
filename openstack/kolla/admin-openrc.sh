@@ -1,0 +1,12 @@
+export OS_PROJECT_DOMAIN_NAME=Default
+export OS_USER_DOMAIN_NAME=Default
+export OS_PROJECT_NAME=admin
+export OS_TENANT_NAME=admin
+export OS_USERNAME=admin
+export OS_PASSWORD=5LqH70Hc5ys9MBnKFBgGjAj55MR8MbQ4eYEyGrk8
+export OS_AUTH_URL=http://10.166.129.253:35357/v3
+export OS_INTERFACE=internal
+export OS_IDENTITY_API_VERSION=3
+export OS_REGION_NAME=RegionOne
+export OS_AUTH_PLUGIN=password
+export no_proxy=10.166.129.253

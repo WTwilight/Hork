@@ -1,0 +1,33 @@
+addon_job_timeout: 30
+authentication: 
+  strategy: "x509"
+ignore_docker_version: false
+
+ingress: 
+  provider: "nginx"
+kubernetes_version: "v1.10.5-rancher1-1"
+
+network: 
+  plugin: "canal"
+
+services: 
+  etcd: 
+    extra_args: 
+      heartbeat-interval: 500
+      election-timeout: 5000
+    snapshot: false
+  kube_api: 
+    pod_security_policy: false
+ssh_agent_auth: false
+
+cloud_provider:
+  name: openstack
+  openstackCloudProvider:
+    global:
+      username: admin
+      password: 5LqH70Hc5ys9MBnKFBgGjAj55MR8MbQ4eYEyGrk8
+      auth-url: http://10.166.129.253:35357/v3
+      tenant-id: 228aa250356244eb8b211e7c270f24fa
+	  domain-id: default
+    load_balancer:
+      subnet-id: bf6a0208-2a7f-4e9c-82c7-831c05e09f3f

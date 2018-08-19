@@ -1,0 +1,7 @@
+{
+    "live-restore": true,
+    "graph": "/data/docker",
+    "insecure-registries": ["private.registry.com"],
+    "registry-mirror": ["https://wghlmi3i.mirror.aliyuncs.com"]
+}
+
