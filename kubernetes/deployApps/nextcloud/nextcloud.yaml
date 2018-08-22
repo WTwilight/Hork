@@ -1,0 +1,64 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nextcloud-service
+#  annotations:
+#    service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+spec:
+  selector:
+    app: nextcloud
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  loadBalancerIP: 10.161.2.22
+  sessionAffinity: ClientIP
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+  labels:
+    app: nextcloud
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+    spec:
+      containers:
+      - name: nextcloud
+        image: private.registry.com/library/nextcloud:13.0.5
+        ports:
+        - containerPort: 80
+        env:
+        - name: MYSQL_DATABASE
+          value: nextclouddb
+        - name: MYSQL_HOST
+          value: mysqlfornextcloud
+        - name: MYSQL_USER
+          value: nextcloud
+        - name: MYSQL_PASSWORD
+          value: nextcloud123
+        volumeMounts:
+        - mountPath: /var/www/html
+          name: volumefornextcloud
+      volumes:
+      - name: volumefornextcloud
+        cephfs:
+          monitors:
+          - 10.164.0.97:6789
+          - 10.164.0.100:6789
+          - 10.164.0.101:6789
+          path: /nextcloud
+          user: admin
+          secretRef:
+            name: ceph-secret
+          readOnly: false

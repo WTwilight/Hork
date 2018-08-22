@@ -1,0 +1,70 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ceph-secret
+data:
+  key: QVFDekozcGI5TmcwTWhBQW53TmlQRzIxWmJTVFlLN1pKNERWekE9PQ==
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysqlfornextcloud
+  labels:
+    app: mysqlfornextcloud
+spec:
+  clusterIP: None
+  ports:
+    - port: 3306
+      protocol: TCP
+      targetPort: 3306
+  selector:
+    app: mysqlfornextcloud
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysqlfornextcloud
+  labels:
+    app: mysqlfornextcloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysqlfornextcloud
+  template:
+    metadata:
+      labels:
+        app: mysqlfornextcloud
+    spec:
+      containers:
+      - name: mysqlfornextcloud
+        image: private.registry.com/library/mysql:5.7
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_DATABASE
+          value: nextclouddb
+        - name: MYSQL_ROOT_PASSWORD
+          value: "12345678"
+        - name: MYSQL_USER
+          value: nextcloud
+        - name: MYSQL_PASSWORD
+          value: nextcloud123
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: volumeformysql
+      volumes:
+      - name: volumeformysql
+        cephfs:
+          monitors:
+          - 10.164.0.97:6789
+          - 10.164.0.100:6789
+          - 10.164.0.101:6789
+          path: /mysql/mysqlfornextcloud
+          user: admin
+          secretRef:
+            name: ceph-secret
+          readOnly: false
